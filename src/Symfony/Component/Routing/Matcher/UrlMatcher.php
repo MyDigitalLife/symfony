@@ -171,6 +171,21 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
                 continue;
             }
 
+            foreach ($matches as $key => $match) {
+                if (is_numeric($match)) {
+                    $floatVal = doubleval($match);
+                    if ($floatVal && intval($floatVal) != $floatVal) {
+                        $matches[$key] = (double)$match;
+                        continue;
+                    }
+
+                    if (is_numeric($match)) {
+                        $matches[$key] = (int)$match;
+                        continue;
+                    }
+                }
+            }
+
             return $this->getAttributes($route, $name, array_replace($matches, $hostMatches));
         }
     }

@@ -427,4 +427,19 @@ class UrlMatcherTest extends TestCase
         $matcher = new UrlMatcher($coll, new RequestContext('', 'GET', 'en.example.com'));
         $this->assertEquals(array('_route' => 'foo', 'locale' => 'en'), $matcher->match('/'));
     }
+
+    public function testRouteTypes()
+    {
+        $coll = new RouteCollection();
+        $coll->add('test', new Route('/page/{id}/{slug}/{double}'));
+        $matcher = new UrlMatcher($coll, new RequestContext());
+
+        $result = $matcher->match('/page/123/foo/2.1');
+        $this->assertInternalType("int", $result["id"]);
+        $this->assertInternalType("string", $result["slug"]);
+        $this->assertInternalType("double", $result["double"]);
+        $this->assertEquals($result["id"], 123);
+        $this->assertEquals($result["slug"], "foo");
+        $this->assertEquals($result["double"], 2.1);
+    }
 }
